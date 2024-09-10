@@ -52,7 +52,7 @@
         The optimal alignment is calculated by finding the alignment with the least loss.
         I initially employed L2 loss as loss function, only to find the results not satisfying.
         I discovered that a bright pixel in one layer does not necessarily align to another bright pixel in a different layer,
-        as a red color may result in a high value when passed through a red filter, while leaving a low value when passed though a blue filter.<br><br>
+        as a color may result in a high value when passed through one filter, while leaving a low value when passed though another filter.<br><br>
         
         Even though pixel values in different layers may not align, edges of shapes and figures should align.
         Therefore, to optimize my model, I adapted the famous <a href= "https://en.wikipedia.org/wiki/Sobel_operator">Sobel Operator</a>
@@ -82,8 +82,8 @@
     </h3>
     <p>
         To find the alignment resulting in the lowest loss, I exhaustively searched all the possible candidates
-        within a range, where the center of the blue or green layer may be aligned to one of the pixels in a square inside the red layer. 
-        The square is defined by its center and its length of side. I set the square's center as the red layer's center point, and the length as 21 pixels.
+        within a range, where the center of the blue or green layer may be aligned to one of the pixels in a square on the red layer. 
+        The square is defined by its center and its length of side. I initially set the square's center as the red layer's center point, and its side length as 21 pixels.
         After traversing all 441 candidates, the alignment with the lowest loss is chosen. I adapted this process on the three smaller jpg images, 
         <i>cathedral.jpg</i>, <i>monastery.jpg</i> and <i>tobolsk.jpg</i> respectively. In Figure 2, 3, 4, 
         I compare the images stacked directly without the alignment process to the aligned images.
@@ -158,17 +158,17 @@
         4. Image Pyramid using Recursive Function
     </h3>
     <p>
-        Although exhaustive search has proven effective on small jpg images, but when adapted on larger tif images, 
-        blue and green shift may exceed the range of (-10, 10) pixels, and in order to expand the range, 
+        Although exhaustive search has proven effective on small jpg images, when adapted on larger tif images, 
+        the optimal blue and green shift may exceed the range of (-10, 10) pixels. In order to expand the range, 
         more time is needed. Time complexity increase dramatically along with the expansion of search range. 
         To improve time efficiency, I adapted the idea of <a href= "https://en.wikipedia.org/wiki/Pyramid_(image_processing)">Image Pyramid</a>.
-        For a large tif image, I downsample them using average pooling with a factor of 3 along each direction,
-        with the resulting image subjected to the same procedure again until it is small enough, which in this task, a height smaller than 500 pixels.
+        For every large tif image, I downsample it using average pooling with a factor of 3 along each direction,
+        with the resulting image subjected to the same procedure again until it is small enough, which in this task, having a height smaller than 500 pixels.
         Exhaustive search is conducted on the center square of the smallest image, and the optimal shift for blue and green layers are found and recorded.
         Then, the pyramid goes up a layer, using the optimal shift obtained by the lower layer to get an estimate of where the best alignment is,
-        and conduct exhaustive search around that estimate to gain a more accurate result based on an image with higher resolution. 
-        This process is again applied on the next layer with an even bigger image, and eventually the result is obtained from the search on the original image. 
-        I use a recursive function to implement this process. The resulting images are shown in Figure 5 ~ 14.
+        and conduct exhaustive search around that estimate to gain a more accurate result based on the image with higher resolution. 
+        This process is again applied on the next layer with an even bigger image, and eventually the optimal alignment is obtained from the search on the original image. 
+        I use a recursive function to implement this process. The resulting images are shown in Figure 5 ~ 15.
     <table class="center" style="margin-left:auto;margin-right:auto;">
         <tr>
             <td><figure>
